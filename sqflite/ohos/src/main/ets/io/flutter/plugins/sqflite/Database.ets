@@ -112,16 +112,30 @@ export class Database {
    */
   private static handleTableOrSyntaxError(operation: Operation, message: string): void {
     let normalizedMessage = message;
-    
-    // 判断表不存在：Insert failed | updated data does not exist | does not exist
-    if (message.includes('Insert failed') || message.includes('updated data does not') || message.includes('does not exist')) {
+    const sql = operation.getSqlCommand()?.getSql() || '';
+    const createTableMatch = sql.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(\w+)/i);
+
+    // OHOS may include both "does not exist" and "already exists" in the
+    // same generic CREATE TABLE error. Classify the statement before the text.
+    if (message.toLowerCase().includes('already exists')) {
+      normalizedMessage = createTableMatch != null
+        ? `table ${createTableMatch[1]} already exists`
+        : `table already exists`;
+    } else if (createTableMatch != null &&
+      (message.includes('does not exist') || message.includes('Generic error'))) {
+      const tableName = createTableMatch[1];
+      const isReserved =
+        Constant.SQL_RESERVED_WORDS.some(kw => tableName.toLowerCase() === kw.toLowerCase());
+      normalizedMessage = isReserved ? `syntax error` : `table ${tableName} already exists`;
+    } else if (message.includes('Insert failed') || message.includes('updated data does not') ||
+      message.includes('does not exist')) {
       normalizedMessage = Database.normalizeTableNotFoundError(operation, message);
-    } else if (message.includes('not supported') || 
-             (message.includes('Generic error') && !message.includes('Insert failed'))) {
+    } else if (message.includes('not supported') ||
+      (message.includes('Generic error') && !message.includes('Insert failed'))) {
       // 判断语法错误：not supported 或 纯粹的 Generic error（不包含 Insert failed）
       normalizedMessage = `syntax error`;
     }
-    
+
     operation.error(Constant.SQLITE_ERROR, normalizedMessage, SqlErrorInfo.getMap(operation));
   }
 
@@ -243,7 +257,9 @@ export class Database {
       }
       return true;
     } catch(err) {
-      Log.e('Database', `executeOrError failed for err: ${err}`);
+      const businessErr = err as BusinessError<void>;
+      Log.e(Constant.TAG,
+        `[executeOrError] FAILED sql="${sql}", code=${businessErr.code}, message=${businessErr.message}`);
       await Database.handleException(operation, err, db);
       return false;
     }

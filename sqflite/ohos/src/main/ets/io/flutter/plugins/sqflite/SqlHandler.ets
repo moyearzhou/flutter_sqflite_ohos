@@ -105,7 +105,8 @@ export class BeginExclusiveHandler extends BaseSqlHandler {
     return upperSql === Constant.SQL_BEGIN_EXCLUSIVE || 
            upperSql === Constant.SQL_BEGIN_EXCLUSIVE + ' TRANSACTION';
   }
-  execute(_sql: string, operation: Operation, _db: relationalStore.RdbStore) {
+  execute(_sql: string, operation: Operation, db: relationalStore.RdbStore) {
+    db.beginTransaction();
     return true;
   }
   get needsPostProcess(): boolean {
