@@ -138,6 +138,12 @@ const String paramSql = 'sql';
 /// List.
 const String paramSqlArguments = 'arguments';
 
+/// Optional query result transport requested from compatible native plugins.
+const String paramQueryResultFormat = 'queryResultFormat';
+
+/// Versioned packed query result transported as a single byte array.
+const String queryResultFormatPackedV1 = 'packed-v1';
+
 /// SQL query cursorId parameter.
 ///
 /// Integer.

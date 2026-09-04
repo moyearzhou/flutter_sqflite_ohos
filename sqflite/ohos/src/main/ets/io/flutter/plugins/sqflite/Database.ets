@@ -36,6 +36,7 @@ import {
   RollbackHandler
 } from './SqlHandler';
 import { deviceInfo } from '@kit.BasicServicesKit';
+import { PackedQueryResult } from './PackedQueryResult';
 
 
 type HandleCallback = (x: Object) => void;
@@ -571,7 +572,20 @@ export class Database {
       // 处理游标分页
       savedCursorId = Database.handleCursorPagination(resultSet, cursorPageSize, results);
 
-      operation.success(results);
+      let replyPayload: Object = results;
+      const requestedResultFormat: string | undefined =
+        operation.getArgument(Constant.PARAM_QUERY_RESULT_FORMAT);
+      if (cursorPageSize == null &&
+        requestedResultFormat === Constant.QUERY_RESULT_FORMAT_PACKED_V1) {
+        // Packing is opt-in and lossless. Unsupported future RDB value types
+        // return null and automatically retain the standard map response.
+        const packedResult: Uint8Array | null = PackedQueryResult.tryEncode(results);
+        if (packedResult != null) {
+          replyPayload = packedResult;
+        }
+      }
+
+      operation.success(replyPayload);
       return true;
 
     } catch (err) {

@@ -15,6 +15,9 @@ class _PlatformIo extends Platform {
   bool get isAndroid => io.Platform.isAndroid;
 
   @override
+  bool get isOhos => io.Platform.operatingSystem == 'ohos';
+
+  @override
   bool get isLinux => io.Platform.isLinux;
 
   @override

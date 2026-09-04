@@ -1,8 +1,10 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:sqflite_common/src/constant.dart';
 import 'package:sqflite_common/src/constant.dart' as constant;
 import 'package:sqflite_common/src/exception.dart';
+import 'package:sqflite_common/src/packed_query_result.dart';
 
 export 'dart:async';
 
@@ -56,6 +58,10 @@ dynamic fromRawOperationResult(Map<dynamic, dynamic> rawOperationResultMap) {
 
 /// Native result to a map list as expected by the sqflite API
 List<Map<String, Object?>> queryResultToList(dynamic queryResult) {
+  if (queryResult is Uint8List) {
+    final packedResult = decodePackedQueryResult(queryResult);
+    return QueryResultSet(packedResult.columns, packedResult.rows);
+  }
   if (queryResult is Map) {
     return queryResultSetFromMap(queryResult);
   }

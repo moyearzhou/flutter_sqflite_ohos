@@ -47,6 +47,8 @@ export class Constant {
   static PARAM_CONTINUE_OR_ERROR: string = "continueOnError";
   static PARAM_COLUMNS: string = "columns";
   static PARAM_ROWS: string = "rows";
+  static PARAM_QUERY_RESULT_FORMAT: string = "queryResultFormat";
+  static QUERY_RESULT_FORMAT_PACKED_V1: string = "packed-v1";
   // For query to use a cursor.Integer.
   static PARAM_CURSOR_PAGE_SIZE: string = "cursorPageSize";
   // For queryCursorNext. Integer

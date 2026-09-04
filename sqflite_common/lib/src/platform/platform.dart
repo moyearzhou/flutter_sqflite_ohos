@@ -16,6 +16,9 @@ abstract class Platform {
   /// True if IO Android
   bool get isAndroid => false;
 
+  /// True if IO OpenHarmony
+  bool get isOhos => false;
+
   /// True if IO Linux
   bool get isLinux => false;
 

@@ -7,6 +7,7 @@ import 'package:sqflite_common/src/database.dart';
 import 'package:sqflite_common/src/exception.dart';
 import 'package:sqflite_common/src/factory.dart';
 import 'package:sqflite_common/src/path_utils.dart';
+import 'package:sqflite_common/src/platform/platform.dart';
 import 'package:sqflite_common/src/sql_builder.dart';
 import 'package:sqflite_common/src/transaction.dart';
 import 'package:sqflite_common/src/utils.dart' as utils;
@@ -583,8 +584,14 @@ mixin SqfliteDatabaseMixin implements SqfliteDatabase {
   Future<List<Map<String, Object?>>> txnRawQuery(
       SqfliteTransaction? txn, String sql, List<Object?>? arguments) {
     return txnSynchronized(txn, (_) async {
-      final dynamic result = await safeInvokeMethod<dynamic>(
-          methodQuery, _txnGetSqlMethodArguments(txn, sql, arguments));
+      final methodArguments = _txnGetSqlMethodArguments(txn, sql, arguments);
+      if (platform.isOhos) {
+        // OHOS can opt into a single packed byte buffer. Other platforms keep
+        // the exact legacy method arguments and standard result transport.
+        methodArguments[paramQueryResultFormat] = queryResultFormatPackedV1;
+      }
+      final dynamic result =
+          await safeInvokeMethod<dynamic>(methodQuery, methodArguments);
       return queryResultToList(result);
     });
   }
