@@ -1,3 +1,7 @@
+## 2.5.4-zotpaper-ohos.1
+
+- 固定现有鸿蒙兼容实现并发布至私有 Pub，内部依赖改用 hosted。
+
 ## 2.5.4
 
 * Remove dependency on `dart:html`
