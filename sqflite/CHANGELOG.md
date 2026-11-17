@@ -1,3 +1,7 @@
+## 2.3.3-zotpaper-ohos.2
+
+- 完整保留 Dart 与鸿蒙原生源码并发布至私有 Pub；替代未供宿主采用的 .1 不完整归档。
+
 ## 2.3.3+1
 
 * Remove android v1 embedding support

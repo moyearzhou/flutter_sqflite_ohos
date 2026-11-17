@@ -16,7 +16,8 @@ repository: https://github.com/tekartik/sqflite/tree/master/sqflite
 issue_tracker: https://github.com/tekartik/sqflite/issues
 description: Flutter plugin for SQLite, a self-contained, high-reliability,
   embedded, SQL database engine.
-version: 2.3.3+1
+version: 2.3.3-zotpaper-ohos.2
+publish_to: https://pub.zotpaper.cn
 
 # This package supports all platforms listed below.
 platforms:
@@ -63,10 +64,8 @@ dependencies:
     sdk: flutter
   path: '>=1.8.0 <3.0.0'
   sqflite_common:
-    git:
-      url: "https://gitcode.com/CPF-Flutter/flutter_sqflite.git"
-      path: "sqflite_common"
-      ref: "br_v2.3.3+1_ohos"
+    hosted: https://pub.zotpaper.cn
+    version: ^2.5.4-zotpaper-ohos.1
     
 dev_dependencies:
   flutter_lints: '>=1.0.0'

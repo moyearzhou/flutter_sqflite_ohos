@@ -1,0 +1,14 @@
+.dart_tool/
+build/
+.pub/
+.DS_Store
+pubspec.lock
+pubspec_overrides.yaml
+example/
+test/
+integration_test/
+*.log
+**/oh_modules/
+**/.hvigor/
+**/build/
+**/har/
